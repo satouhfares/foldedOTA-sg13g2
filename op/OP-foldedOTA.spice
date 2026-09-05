@@ -1,0 +1,43 @@
+** sch_path: /foss/designs/OP-foldedOTA.sch
+**.subckt OP-foldedOTA
+XM1 net5 VinP net1 0 sg13_hv_nmos w=28u l=1u ng=4
+XM2 net6 VinN net1 0 sg13_hv_nmos w=28u l=1u ng=4
+XM3 net1 net3 0 0 sg13_hv_nmos w=15u l=1u ng=3
+XM4 net5 Vb1 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM5 net6 Vb1 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM6 net2 Vbp net5 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM7 Vout Vbp net6 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM8 net2 Vbn net4 0 sg13_hv_nmos w=7u l=1u ng=1
+XM9 Vout Vbn net7 0 sg13_hv_nmos w=7u l=1u ng=1
+XM10 net4 net2 0 0 sg13_hv_nmos w=7u l=1u ng=1
+XM11 net7 net2 0 0 sg13_hv_nmos w=7u l=1u ng=1
+XM12 net3 net3 0 0 sg13_hv_nmos w=15u l=1u ng=3
+I0 VDD net3 50u
+XM13 Vb1 Vb1 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+I1 Vb1 0 50u
+VPac VinP GND 1.8 ac 100m
+VNac VinN GND 1.8 ac -100m
+Vbnmos Vbn GND 1.25
+Vbpmos Vbp GND 0.5
+C1 Vout 0 10p
+VDD VDD GND 3.3
+**** begin user architecture code
+
+
+
+.lib cornerMOShv.lib mos_tt
+
+
+
+
+.include OP-foldedOTA.save
+.control
+op
+write OP-foldedOTA.raw
+.endc
+
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.end

@@ -1,0 +1,77 @@
+** sch_path: /foss/designs/CL-foldedOTA.sch
+**.subckt CL-foldedOTA
+VPac VinP GND 1.8 ac 100m
+Vbnmos Vbn GND 1.25
+Vbpmos Vbp GND 0.5
+VDD VDD GND 3.3
+x1 VDD Vbp Vout VinP Vout Vbn GND foldedOTA
+C1 Vout GND 10p
+**** begin user architecture code
+
+
+
+.lib cornerMOShv.lib mos_tt
+
+
+
+
+.control
+destroy all
+ac dec 20 1 900Meg
+run
+
+let gain_db    = db(Vout/VinP)
+let gain_phase = phase(Vout/VinP)*180/PI
+
+save all
+
+meas ac dc_gain_cl find gain_db at=1
+meas ac f3db_cl    when gain_db='dc_gain_cl-3'
+meas ac gpeak      max  gain_db
+
+plot gain_db    ylabel 'Gain (dB)'   xlog title 'Closed-Loop Gain'
+plot gain_phase ylabel 'Phase (deg)' xlog title 'Closed-Loop Phase'
+
+echo
+echo '================ CLOSED-LOOP AC SUMMARY ================'
+print dc_gain_cl
+print f3db_cl
+print gpeak
+echo '=========================================================='
+
+.endc
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  foldedOTA.sym # of pins=7
+** sym_path: /foss/designs/foldedOTA.sym
+** sch_path: /foss/designs/foldedOTA.sch
+.subckt foldedOTA VDD Vbp VOUT VinP VinN Vbn VSS
+*.iopin VDD
+*.iopin VSS
+*.iopin VOUT
+*.iopin Vbp
+*.iopin Vbn
+*.iopin VinN
+*.iopin VinP
+XM1 net2 VinP net1 VSS sg13_hv_nmos w=28u l=1u ng=4
+XM2 net3 VinN net1 VSS sg13_hv_nmos w=28u l=1u ng=4
+XM3 net1 net8 VSS VSS sg13_hv_nmos w=15u l=1u ng=3
+XM4 net2 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM5 net3 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM6 net4 Vbp net2 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM7 VOUT Vbp net3 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM8 net4 Vbn net5 VSS sg13_hv_nmos w=7u l=1u ng=1
+XM9 VOUT Vbn net6 VSS sg13_hv_nmos w=7u l=1u ng=1
+XM10 net5 net4 VSS VSS sg13_hv_nmos w=7u l=1u ng=1
+XM11 net6 net4 VSS VSS sg13_hv_nmos w=7u l=1u ng=1
+XM12 net8 net8 VSS VSS sg13_hv_nmos w=15u l=1u ng=3
+I0 VDD net8 50u
+XM13 net7 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+I1 net7 VSS 50u
+.ends
+
+.GLOBAL GND
+.end

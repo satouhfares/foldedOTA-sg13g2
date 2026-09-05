@@ -1,0 +1,71 @@
+** sch_path: /foss/designs/SR-foldedOTA.sch
+**.subckt SR-foldedOTA
+VPac VinP GND PULSE(1.25 2.05 0 10n 10n 1u 2u)
+Vbnmos Vbn GND 1.25
+Vbpmos Vbp GND 0.5
+VDD VDD GND 3.3
+x1 VDD Vbp Vout VinP Vout Vbn GND foldedOTA
+C1 Vout GND 10p
+**** begin user architecture code
+
+
+
+.lib cornerMOShv.lib mos_sf
+
+
+
+
+.control
+destroy all
+tran 1n 2u
+run
+save all
+
+meas tran sr_rise_td trig v(vout) val=1.33 rise=1 targ v(vout) val=1.97 rise=1
+meas tran sr_fall_td trig v(vout) val=1.97 fall=1 targ v(vout) val=1.33 fall=1
+
+let sr_rise = 0.64 / sr_rise_td
+let sr_fall = 0.64 / sr_fall_td
+
+plot v(vinp) v(vout) ylabel 'Voltage (V)' title 'Slew Rate Step Response'
+echo
+echo '================ SLEW RATE SUMMARY ================'
+print sr_rise
+print sr_fall
+echo '====================================================='
+.endc
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  foldedOTA.sym # of pins=7
+** sym_path: /foss/designs/foldedOTA.sym
+** sch_path: /foss/designs/foldedOTA.sch
+.subckt foldedOTA VDD Vbp VOUT VinP VinN Vbn VSS
+*.iopin VDD
+*.iopin VSS
+*.iopin VOUT
+*.iopin Vbp
+*.iopin Vbn
+*.iopin VinN
+*.iopin VinP
+XM1 net2 VinP net1 VSS sg13_hv_nmos w=28u l=1u ng=4
+XM2 net3 VinN net1 VSS sg13_hv_nmos w=28u l=1u ng=4
+XM3 net1 net8 VSS VSS sg13_hv_nmos w=15u l=1u ng=3
+XM4 net2 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM5 net3 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+XM6 net4 Vbp net2 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM7 VOUT Vbp net3 VDD sg13_hv_pmos w=2u l=1u ng=1
+XM8 net4 Vbn net5 VSS sg13_hv_nmos w=7u l=1u ng=1
+XM9 VOUT Vbn net6 VSS sg13_hv_nmos w=7u l=1u ng=1
+XM10 net5 net4 VSS VSS sg13_hv_nmos w=7u l=1u ng=1
+XM11 net6 net4 VSS VSS sg13_hv_nmos w=7u l=1u ng=1
+XM12 net8 net8 VSS VSS sg13_hv_nmos w=15u l=1u ng=3
+I0 VDD net8 50u
+XM13 net7 net7 VDD VDD sg13_hv_pmos w=14u l=1u ng=2
+I1 net7 VSS 50u
+.ends
+
+.GLOBAL GND
+.end
