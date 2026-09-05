@@ -97,6 +97,7 @@ Same high output impedance, one fewer `V_TH` of required headroom — that matte
 
 ![Open loop gain and phase](ac/OLPhase_Gain.png)
 ![Slew rate step response](slew_rate/slew_rate_step_response.png)
+![PSRR positive](psrr/PSRRp.png)
 ![PSRR negative](psrr/PSRRn.png)
 
 ## Folded cascode vs. telescopic cascode vs. 5T OTA
